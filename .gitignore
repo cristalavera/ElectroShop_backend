@@ -1,0 +1,26 @@
+# ========================
+# Backend (Spring Boot)
+# ========================
+
+# Variables de entorno
+.env
+
+# Carpeta de compilación
+/target/
+
+# Archivos de IDE (Eclipse/IntelliJ)
+.idea/
+*.iml
+.classpath
+.project
+.settings
+
+# Logs y otros archivos generados
+/logs
+*.log
+
+# Maven wrapper
+/.mvn/wrapper/maven-wrapper.jar
+
+# Archivos del sistema
+.DS_Store
