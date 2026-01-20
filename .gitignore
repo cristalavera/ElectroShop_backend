@@ -2,9 +2,6 @@
 # Backend (Spring Boot)
 # ========================
 
-# Variables de entorno
-.env
-
 # Carpeta de compilación
 /target/
 
