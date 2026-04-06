@@ -2,22 +2,34 @@
 # Backend (Spring Boot)
 # ========================
 
-# Carpeta de compilación
-/target/
+# Compilación
+target/
+*.class
 
-# Archivos de IDE (Eclipse/IntelliJ)
+# Logs
+logs/
+*.log
+
+# IDEs
 .idea/
 *.iml
 .classpath
 .project
 .settings
 
-# Logs y otros archivos generados
-/logs
-*.log
+# VS Code (por si acaso)
+.vscode/
 
-# Maven wrapper
-/.mvn/wrapper/maven-wrapper.jar
+# Maven wrapper (opcional)
+.mvn/wrapper/maven-wrapper.jar
 
-# Archivos del sistema
+# OS
 .DS_Store
+Thumbs.db
+
+# Variables de entorno
+.env
+
+# Archivos de configuración sensibles (opcional)
+application-local.properties
+application-dev.properties
