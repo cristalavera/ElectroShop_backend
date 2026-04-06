@@ -17,8 +17,13 @@ import org.springframework.web.server.ResponseStatusException;
 
 public class ProductoController {
 
-    @Autowired
-    private ProductoRepository productoRepository;
+	
+	private final ProductoRepository productoRepository;
+
+	@Autowired
+	public ProductoController(ProductoRepository productoRepository) {
+	    this.productoRepository = productoRepository;
+	}
 
     // Ruta POST para crear un producto
     @PostMapping
