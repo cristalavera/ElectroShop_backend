@@ -2,27 +2,28 @@ package com.electroshop.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.web.server.ResponseStatusException;
-import com.electroshop.model.Producto;
-import com.electroshop.repository.ProductoRepository;
 
+import com.electroshop.model.Producto;
+import com.electroshop.service.ProductoService;
+
+import org.springframework.web.server.ResponseStatusException;
 
 public class ProductoControllerTest {
-	@Mock
-    private ProductoRepository productoRepository;
+
+    @Mock
+    private ProductoService productoService;
 
     private ProductoController productoController;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        // Inyección del mock mediante constructor
-        productoController = new ProductoController(productoRepository);
+        productoController = new ProductoController(productoService);
     }
 
     @Test
@@ -32,7 +33,7 @@ public class ProductoControllerTest {
         producto.setNombre("Portátil");
         producto.setPrecio(1000.0);
 
-        when(productoRepository.save(producto)).thenReturn(producto);
+        when(productoService.crear(producto)).thenReturn(producto);
 
         // Act
         Producto resultado = productoController.crearProducto(producto);
@@ -40,13 +41,14 @@ public class ProductoControllerTest {
         // Assert
         assertNotNull(resultado);
         assertEquals("Portátil", resultado.getNombre());
-        verify(productoRepository, times(1)).save(producto);
+        verify(productoService, times(1)).crear(producto);
     }
 
     @Test
     void testObtenerProducto_noExiste() {
         // Arrange
-        when(productoRepository.findById(1L)).thenReturn(Optional.empty());
+        when(productoService.obtenerPorId(1L))
+            .thenThrow(new ResponseStatusException(null));
 
         // Act & Assert
         assertThrows(ResponseStatusException.class, () -> {

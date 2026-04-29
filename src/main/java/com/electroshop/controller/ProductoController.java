@@ -3,13 +3,11 @@ package com.electroshop.controller;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.electroshop.model.Producto;
-import com.electroshop.repository.ProductoRepository;
+import com.electroshop.service.ProductoService;
 import jakarta.validation.Valid;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/productos")
@@ -18,51 +16,41 @@ import org.springframework.web.server.ResponseStatusException;
 public class ProductoController {
 
 	
-	private final ProductoRepository productoRepository;
+	private final ProductoService productoService;
 
 	@Autowired
-	public ProductoController(ProductoRepository productoRepository) {
-	    this.productoRepository = productoRepository;
+	public ProductoController(ProductoService productoService) {
+	    this.productoService = productoService;
 	}
 
     // Ruta POST para crear un producto
-    @PostMapping
-    public Producto crearProducto(@Valid @RequestBody Producto nuevoProducto) {
-        return productoRepository.save(nuevoProducto); // Inserta el producto en la BD
-    }
+	@PostMapping
+	public Producto crearProducto(@Valid @RequestBody Producto nuevoProducto) {
+	    return productoService.crear(nuevoProducto);
+	}
     
     // Ruta POST para crear varios productos a la vez
-    @PostMapping("/varios")
-    public List<Producto> crearVariosProductos(@Valid @RequestBody List<Producto> nuevosProductos) {
-        return productoRepository.saveAll(nuevosProductos);
-    }
+	@PostMapping("/varios")
+	public List<Producto> crearVariosProductos(@Valid @RequestBody List<Producto> nuevosProductos) {
+	    return productoService.crearVarios(nuevosProductos);
+	}
     
     // Ruta GET para listar productos
-    @GetMapping
-    public List<Producto> listarProductos() {
-        return productoRepository.findAll();  // Devuelve todos los productos
-    }
+	@GetMapping
+	public List<Producto> listarProductos() {
+	    return productoService.obtenerTodos(); //Devuelve todos los productos
+	}
     
     // Ruta GET para un producto específico
     @GetMapping("/{id}")
     public Producto obtenerProducto(@PathVariable Long id) {
-        return productoRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Producto no encontrado"));
+        return productoService.obtenerPorId(id);
     }
     
     // Ruta PUT para actualizar totalmente un producto
     @PutMapping("/{id}")
-    public Producto actualizarProducto(@Valid @PathVariable Long id, @RequestBody Producto productoActualizado) {
-        Producto producto = productoRepository.findById(id).orElse(null);
-        if(producto != null) {
-            producto.setNombre(productoActualizado.getNombre());
-            producto.setDescripcion(productoActualizado.getDescripcion());
-            producto.setPrecio(productoActualizado.getPrecio());
-            producto.setStock(productoActualizado.getStock());
-            return productoRepository.save(producto);  // Guarda cambios
-        }
-        return null;
+    public Producto actualizarProducto(@PathVariable Long id, @Valid @RequestBody Producto productoActualizado) {
+        return productoService.actualizar(id, productoActualizado);
     }
     
     // Ruta PUT para actualizar parcialmente un producto
@@ -71,33 +59,16 @@ public class ProductoController {
             @PathVariable Long id,
             @RequestBody Map<String, Object> cambios) {
 
-        Producto producto = productoRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado"));
-
-        // Aplicar cambios solo a los campos enviados
-        if (cambios.containsKey("nombre")) {
-            producto.setNombre((String) cambios.get("nombre"));
-        }
-        if (cambios.containsKey("descripción")) {
-            producto.setDescripcion((String) cambios.get("descripción"));
-        }
-        if (cambios.containsKey("precio")) {
-            producto.setPrecio(Double.valueOf(cambios.get("precio").toString()));
-        }
-        if (cambios.containsKey("stock")) {
-            producto.setStock(Integer.valueOf(cambios.get("stock").toString()));
-        }
-    
-        Producto actualizado = productoRepository.save(producto);
+        Producto actualizado = productoService.actualizarParcial(id, cambios);
         return ResponseEntity.ok(actualizado);
     }
     
     
     // Ruta DELETE para borrar un producto
     @DeleteMapping("/{id}")
-    public String eliminarProducto(@PathVariable Long id) {
-        productoRepository.deleteById(id);
-        return "Producto eliminado correctamente";
+    public ResponseEntity<Void> eliminarProducto(@PathVariable Long id) {
+        productoService.eliminar(id);
+        return ResponseEntity.noContent().build();
     }
 }
     
