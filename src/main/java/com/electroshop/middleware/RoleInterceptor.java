@@ -11,7 +11,12 @@ public class RoleInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        String role = request.getHeader("role");
+    	// PRIMERO: dejar pasar preflight CORS
+        if (request.getMethod().equals("OPTIONS")) {
+            return true;
+        }
+    	
+    	String role = request.getHeader("role");
 
         // Ejemplo: proteger rutas de eliminación
         if (request.getMethod().equals("DELETE") && !"ADMIN".equals(role)) {
