@@ -1,10 +1,14 @@
-package com.electroshop.middleware;
+package com.electroshop.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import com.electroshop.middleware.AuthInterceptor;
+import com.electroshop.middleware.LoggingInterceptor;
+import com.electroshop.middleware.RoleInterceptor;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -27,7 +31,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173")
+                .allowedOrigins("http://localhost:5173", "https://electroshopfrontendapp.vercel.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*");
     }
