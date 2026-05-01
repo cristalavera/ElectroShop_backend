@@ -8,23 +8,40 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class RoleInterceptor implements HandlerInterceptor {
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-    	// PRIMERO: dejar pasar preflight CORS
-        if (request.getMethod().equals("OPTIONS")) {
-            return true;
-        }
-    	
-    	String role = request.getHeader("role");
+	    // Permitir preflight CORS
+	    if (request.getMethod().equals("OPTIONS")) {
+	        return true;
+	    }
 
-        // Ejemplo: proteger rutas de eliminación
-        if (request.getMethod().equals("DELETE") && !"ADMIN".equals(role)) {
-            response.setStatus(403);
-            response.getWriter().write("Acceso denegado: se requiere rol ADMIN");
-            return false;
-        }
+	    String authHeader = request.getHeader("Authorization");
 
-        return true;
-    }
+	    // Seguridad básica
+	    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+	        return true; // AuthInterceptor ya gestiona el 401
+	    }
+
+	    // Extraer token
+	    String token = authHeader.replace("Bearer ", "");
+	    String[] parts = token.split("-");
+
+	    // Extraer rol
+	    String role = parts.length > 2 ? parts[2] : "UNKNOWN";
+
+	    /*
+	    // CONTROL DE ACCESO POR ROL (PREGUNTA 7)
+
+	    if (request.getRequestURI().contains("/productos")) {
+	        if (!role.equals("ADMIN")) {
+	            response.setStatus(403);
+	            response.getWriter().write("Acceso solo ADMIN");
+	            return false;
+	        }
+	    }
+	    */
+
+	    return true;
+	}
 }
