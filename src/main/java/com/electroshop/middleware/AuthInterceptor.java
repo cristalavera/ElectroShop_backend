@@ -12,12 +12,12 @@ public class AuthInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
     	String authHeader = request.getHeader("Authorization");
-
+    	
         // Permitir preflight CORS
         if (request.getMethod().equals("OPTIONS")) {
             return true;
         }
-
+        
         // Validar token
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             response.setStatus(401);
