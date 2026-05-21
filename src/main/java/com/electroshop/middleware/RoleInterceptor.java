@@ -15,7 +15,6 @@ public class RoleInterceptor implements HandlerInterceptor {
 	    if (request.getMethod().equals("OPTIONS")) {
 	        return true;
 	    }
-
 	    String authHeader = request.getHeader("Authorization");
 
 	    // Seguridad básica
@@ -30,8 +29,7 @@ public class RoleInterceptor implements HandlerInterceptor {
 	    // Extraer rol
 	    String role = parts.length > 2 ? parts[2] : "UNKNOWN";
 
-	    /*
-	    // CONTROL DE ACCESO POR ROL (PREGUNTA 7)
+	    /*// CONTROL DE ACCESO POR ROL (PREGUNTA 7)
 
 	    if (request.getRequestURI().contains("/productos")) {
 	        if (!role.equals("ADMIN")) {
@@ -39,8 +37,7 @@ public class RoleInterceptor implements HandlerInterceptor {
 	            response.getWriter().write("Acceso solo ADMIN");
 	            return false;
 	        }
-	    }
-	    */
+	    }*/
 
 	    return true;
 	}
