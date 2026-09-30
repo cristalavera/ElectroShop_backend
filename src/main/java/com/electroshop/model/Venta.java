@@ -36,11 +36,11 @@ public class Venta {
     // Relación muchos a uno con Cliente
     @ManyToOne
     @JoinColumn(name = "cliente_id")
-    private Cliente cliente;
+    private Usuario cliente;
 
     public Venta() {}
 
-    public Venta(LocalDate fecha, int cantidad, List<Producto> productos, Cliente cliente) {
+    public Venta(LocalDate fecha, int cantidad, List<Producto> productos, Usuario cliente) {
         this.fecha = fecha;
         this.cantidad = cantidad;
         this.productos = productos;
@@ -72,10 +72,10 @@ public class Venta {
 	public void setProductos(List<Producto> productos) {
 		this.productos = productos;
 	}
-	public Cliente getCliente() {
+	public Usuario getCliente() {
 		return cliente;
 	}
-	public void setCliente(Cliente cliente) {
+	public void setCliente(Usuario cliente) {
 		this.cliente = cliente;
 	}
 
