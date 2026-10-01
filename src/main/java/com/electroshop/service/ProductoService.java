@@ -1,5 +1,6 @@
 package com.electroshop.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ public class ProductoService {
             producto.setDescripcion((String) cambios.get("descripcion"));
         }
         if (cambios.containsKey("precio")) {
-            producto.setPrecio(Double.valueOf(cambios.get("precio").toString()));
+        	producto.setPrecio(new BigDecimal(cambios.get("precio").toString()));
         }
         if (cambios.containsKey("stock")) {
             producto.setStock(Integer.valueOf(cambios.get("stock").toString()));

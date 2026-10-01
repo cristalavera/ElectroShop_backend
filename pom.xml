@@ -48,14 +48,14 @@
         	<groupId>org.postgresql</groupId>
     		<artifactId>postgresql</artifactId>
 		</dependency>
-
+	
 		<!-- Tests -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+					
 		<dependency>
     		<groupId>org.mockito</groupId>
     		<artifactId>mockito-core</artifactId>
@@ -68,6 +68,13 @@
     		<scope>test</scope>
 		</dependency>
 		
+		<!-- Base de datos H2 para tests -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
 		<!-- DevTools / Reinicio automático -->
 		<dependency>
    			<groupId>org.springframework.boot</groupId>
@@ -75,7 +82,7 @@
     		<scope>runtime</scope>
     		<optional>true</optional>
 		</dependency>
-		
+
 		<!-- Validación de datos -->
 		<dependency>
    			<groupId>org.springframework.boot</groupId>

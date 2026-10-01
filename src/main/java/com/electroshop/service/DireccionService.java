@@ -1,5 +1,5 @@
 package com.electroshop.service;
 
-public class VentaService {
+public class DireccionService {
 
 }

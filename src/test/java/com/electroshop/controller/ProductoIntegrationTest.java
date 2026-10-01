@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import com.electroshop.model.Producto;
 import com.electroshop.repository.ProductoRepository;
@@ -13,10 +14,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @AutoConfigureMockMvc
+
 public class ProductoIntegrationTest {
 
 	@Autowired
@@ -52,7 +57,8 @@ public class ProductoIntegrationTest {
 
         Producto producto = new Producto();
         producto.setNombre("Ratón");
-        producto.setPrecio(20);
+        producto.setPrecio(BigDecimal.valueOf(20.0));
+        producto.setStock(10);
 
         productoRepository.save(producto);
 
