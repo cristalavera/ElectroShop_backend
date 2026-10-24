@@ -12,8 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.electroshop.dto.RegistroUsuarioRequest;
+import com.electroshop.dto.UsuarioResponse;
 import com.electroshop.model.Usuario;
 import com.electroshop.repository.UsuarioRepository;
+import com.electroshop.service.UsuarioService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -22,10 +27,14 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     // Crear un usuario
     @PostMapping
-    public Usuario crearUsuario(@RequestBody Usuario nuevoUsuario) {
-        return usuarioRepository.save(nuevoUsuario);
+    public UsuarioResponse crearUsuario(@Valid @RequestBody RegistroUsuarioRequest datos) {
+        Usuario usuario = usuarioService.registrarUsuario(datos);
+        return new UsuarioResponse(usuario);
     }
 
     // Listar usuarios

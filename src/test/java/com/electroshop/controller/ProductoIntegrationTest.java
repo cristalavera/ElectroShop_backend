@@ -14,9 +14,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-
 import java.math.BigDecimal;
 import java.util.List;
+import org.springframework.security.test.context.support.WithMockUser;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -30,6 +32,7 @@ public class ProductoIntegrationTest {
     @Autowired
     private ProductoRepository productoRepository;
 
+    @WithMockUser
     @Test
     void debeCrearProductoCorrectamente() throws Exception {
 
@@ -43,7 +46,7 @@ public class ProductoIntegrationTest {
 				        """;
 
 		mockMvc.perform(post("/productos")
-		        .header("Authorization", "Bearer testtoken")
+		        .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(productoJson))
                 .andExpect(status().isOk());
@@ -52,6 +55,7 @@ public class ProductoIntegrationTest {
         assertFalse(productos.isEmpty());
     }
     
+    @WithMockUser
     @Test
     void debeObtenerProductoExistente() throws Exception {
 
@@ -68,6 +72,7 @@ public class ProductoIntegrationTest {
                 .andExpect(jsonPath("$.nombre").value("Ratón"));
     }
     
+    @WithMockUser
     @Test
     void debeDevolverErrorSiProductoNoExiste() throws Exception {
 
