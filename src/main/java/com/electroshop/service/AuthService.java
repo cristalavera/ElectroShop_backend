@@ -50,4 +50,12 @@ public class AuthService {
                 token
         );
     }
+    
+    public UsuarioResponse obtenerUsuarioPorEmail(String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() ->
+                    new IllegalArgumentException("Usuario no encontrado"));
+
+        return new UsuarioResponse(usuario);
+    }
 }

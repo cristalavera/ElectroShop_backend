@@ -12,6 +12,8 @@ import com.electroshop.dto.UsuarioResponse;
 import com.electroshop.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
+
 
 
 @RestController
@@ -57,6 +59,16 @@ public class AuthController {
         return ResponseEntity.ok(resultado.getUsuario());
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<UsuarioResponse> obtenerUsuarioAutenticado(
+            Authentication authentication) {
+
+        UsuarioResponse usuario =
+                authService.obtenerUsuarioPorEmail(authentication.getName());
+
+        return ResponseEntity.ok(usuario);
+    }
+    
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
 
