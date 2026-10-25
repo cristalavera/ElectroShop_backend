@@ -33,8 +33,10 @@ public class SecurityConfig {
 						.csrfTokenRequestHandler(
 								new org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler())
 						.ignoringRequestMatchers("/auth/login", "/usuarios"))
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**").permitAll()
-						.requestMatchers(HttpMethod.POST, "/usuarios").permitAll().anyRequest().authenticated())
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers(HttpMethod.POST, "/auth/login", "/auth/logout").permitAll()
+						.requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
+						.anyRequest().authenticated())
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
