@@ -1,3 +1,4 @@
+
 package com.electroshop.service;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -5,6 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Service;
 
 import com.electroshop.dto.LoginRequest;
+import com.electroshop.dto.LoginResponse;
 import com.electroshop.dto.UsuarioResponse;
 import com.electroshop.model.Usuario;
 import com.electroshop.repository.UsuarioRepository;
@@ -14,14 +16,18 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final UsuarioRepository usuarioRepository;
+    private final JwtService jwtService;
 
-    public AuthService(AuthenticationManager authenticationManager,
-                       UsuarioRepository usuarioRepository) {
+    public AuthService(
+            AuthenticationManager authenticationManager,
+            UsuarioRepository usuarioRepository,
+            JwtService jwtService) {
         this.authenticationManager = authenticationManager;
         this.usuarioRepository = usuarioRepository;
+        this.jwtService = jwtService;
     }
 
-    public UsuarioResponse login(LoginRequest datos) {
+    public LoginResponse login(LoginRequest datos) {
 
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
@@ -34,6 +40,14 @@ public class AuthService {
                 .orElseThrow(() ->
                     new IllegalArgumentException("Usuario no encontrado"));
 
-        return new UsuarioResponse(usuario);
+        String token = jwtService.generarToken(
+                usuario.getEmail(),
+                usuario.getRol()
+        );
+
+        return new LoginResponse(
+                new UsuarioResponse(usuario),
+                token
+        );
     }
 }
