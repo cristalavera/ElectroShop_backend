@@ -1,4 +1,3 @@
-
 package com.electroshop.config;
 
 import org.springframework.context.annotation.Bean;
@@ -30,13 +29,36 @@ public class SecurityConfig {
 		http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.formLogin(form -> form.disable()).httpBasic(basic -> basic.disable())
 				.csrf(csrf -> csrf.csrfTokenRepository(csrfRepository)
-						.csrfTokenRequestHandler(
-								new org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler())
-						.ignoringRequestMatchers("/auth/login", "/usuarios"))
+				        .csrfTokenRequestHandler(
+				                new org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler())
+				        .ignoringRequestMatchers(
+				                new org.springframework.security.web.util.matcher.AntPathRequestMatcher(
+				                        "/auth/login", "POST"),
+				                new org.springframework.security.web.util.matcher.AntPathRequestMatcher(
+				                        "/usuarios", "POST")))
+
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.POST, "/auth/login", "/auth/logout").permitAll()
-						.requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
-						.anyRequest().authenticated())
+				        // Inicio de sesión y registro públicos
+				        .requestMatchers(HttpMethod.POST, "/auth/login", "/usuarios").permitAll()
+
+				        // Cierre de sesión: requiere autenticación
+				        .requestMatchers(HttpMethod.POST, "/auth/logout").authenticated()
+
+				        // Catálogo público: invitados y usuarios autenticados
+				        .requestMatchers(HttpMethod.GET, "/productos", "/productos/**").permitAll()
+
+				        // Gestión del catálogo: solo administradores
+				        .requestMatchers(HttpMethod.POST, "/productos", "/productos/varios").hasRole("ADMIN")
+				        .requestMatchers(HttpMethod.PUT, "/productos/**").hasRole("ADMIN")
+				        .requestMatchers(HttpMethod.PATCH, "/productos/**").hasRole("ADMIN")
+				        .requestMatchers(HttpMethod.DELETE, "/productos/**").hasRole("ADMIN")
+
+				        // Los endpoints genéricos de usuarios quedan bloqueados
+				        // hasta implementar las rutas específicas de perfil
+				        .requestMatchers("/usuarios", "/usuarios/**").denyAll()
+
+				        // El resto de rutas requiere autenticación
+				        .anyRequest().authenticated())
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();

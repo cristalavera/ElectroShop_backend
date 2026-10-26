@@ -1,4 +1,3 @@
-
 package com.electroshop.service;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,51 +10,40 @@ import com.electroshop.dto.UsuarioResponse;
 import com.electroshop.model.Usuario;
 import com.electroshop.repository.UsuarioRepository;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 @Service
 public class AuthService {
 
-    private final AuthenticationManager authenticationManager;
-    private final UsuarioRepository usuarioRepository;
-    private final JwtService jwtService;
+	private final AuthenticationManager authenticationManager;
+	private final UsuarioRepository usuarioRepository;
+	private final JwtService jwtService;
 
-    public AuthService(
-            AuthenticationManager authenticationManager,
-            UsuarioRepository usuarioRepository,
-            JwtService jwtService) {
-        this.authenticationManager = authenticationManager;
-        this.usuarioRepository = usuarioRepository;
-        this.jwtService = jwtService;
-    }
+	public AuthService(AuthenticationManager authenticationManager, UsuarioRepository usuarioRepository,
+			JwtService jwtService) {
+		this.authenticationManager = authenticationManager;
+		this.usuarioRepository = usuarioRepository;
+		this.jwtService = jwtService;
+	}
 
-    public LoginResponse login(LoginRequest datos) {
+	public LoginResponse login(LoginRequest datos) {
 
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                datos.getEmail(),
-                datos.getPassword()
-            )
-        );
+		authenticationManager
+				.authenticate(new UsernamePasswordAuthenticationToken(datos.getEmail(), datos.getPassword()));
 
-        Usuario usuario = usuarioRepository.findByEmail(datos.getEmail())
-                .orElseThrow(() ->
-                    new IllegalArgumentException("Usuario no encontrado"));
+		Usuario usuario = usuarioRepository.findByEmail(datos.getEmail())
+				.orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
 
-        String token = jwtService.generarToken(
-                usuario.getEmail(),
-                usuario.getRol()
-        );
+		String token = jwtService.generarToken(usuario.getEmail(), usuario.getRol());
 
-        return new LoginResponse(
-                new UsuarioResponse(usuario),
-                token
-        );
-    }
-    
-    public UsuarioResponse obtenerUsuarioPorEmail(String email) {
-        Usuario usuario = usuarioRepository.findByEmail(email)
-                .orElseThrow(() ->
-                    new IllegalArgumentException("Usuario no encontrado"));
+		return new LoginResponse(new UsuarioResponse(usuario), token);
+	}
 
-        return new UsuarioResponse(usuario);
-    }
+	public UsuarioResponse obtenerUsuarioPorEmail(String email) {
+		Usuario usuario = usuarioRepository.findByEmail(email)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+
+		return new UsuarioResponse(usuario);
+	}
 }
